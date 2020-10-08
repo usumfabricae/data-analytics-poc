@@ -14,8 +14,8 @@ INTO TABLE CREDITO
 	OPTIONALLY ENCLOSED BY '"'
 	TRAILING NULLCOLS
 (
-data_affido date "yyyy-mm-dd",
-data_scadenza date "yyyy-mm-dd",
+data_affido,
+data_scadenza ,
 importo , 
 key_soggetti
 )

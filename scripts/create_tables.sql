@@ -43,8 +43,8 @@ primary key (nome_prodotto)
 
 create table credito (
 key_soggetti  number(10) not null,
-data_affido date not null,
-data_scadenza date not null,
+data_affido varchar2(128) not null,
+data_scadenza varchar2(128) not null,
 IMPORTO varchar2(128) not null,
 primary key (key_soggetti)
 );
