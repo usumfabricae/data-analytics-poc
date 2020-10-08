@@ -45,7 +45,7 @@ create table credito (
 key_soggetti  number(10) not null,
 data_affido date not null,
 data_scadenza date not null,
-IMPORTO NUMBER(10,6) not null,
+IMPORTO varchar2(128) not null,
 primary key (key_soggetti)
 );
 
