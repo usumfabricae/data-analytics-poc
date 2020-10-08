@@ -51,7 +51,7 @@ primary key (key_soggetti)
 
 create table punti_di_fornitura (
 key_punti_di_fornitura  number(10) not null,
-regione date not null,
-indirizzo date not null,
+regione varchar2(128)  not null,
+indirizzo varchar2(128)  not null,
 primary key (key_punti_di_fornitura)
 );
