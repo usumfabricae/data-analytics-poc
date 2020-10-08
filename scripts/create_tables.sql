@@ -29,8 +29,9 @@ primary key (key_contratti)
 );
 
 create table prootti (
+key_prodotti number(10) not null,
 nome_prodotto varchar2(128) not null,
-FO NUMBER(10,6) not null, 
+F0 NUMBER(10,6) not null, 
 F1 NUMBER(10,6) not null, 
 F2 NUMBER(10,6) not null, 
 F3 NUMBER(10,6) not null, 
