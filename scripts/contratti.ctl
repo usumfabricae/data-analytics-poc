@@ -14,14 +14,14 @@ INTO TABLE CONTRATTI
 	OPTIONALLY ENCLOSED BY '"'
 	TRAILING NULLCOLS
 (
-key_contratti ,
+key_punti_di_fornitura ,
 nome_commerciale , 
 vettore ,
-key_punti_di_fornitura ,
 data_attivazione_fornitura date "yyyy-mm-dd",
-data_cessazione_fornitura date "yyyy-mm-dd",
 anno_prima_attivazione_fornitura ,
 canale_di_vendita  ,
+key_soggetti ,
+key_contratti ,
 codice_contratto ,
-key_soggetti 
+data_cessazione_fornitura date "yyyy-mm-dd"
 )
