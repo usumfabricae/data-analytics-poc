@@ -28,7 +28,7 @@ key_soggetti number(10) not null,
 primary key (key_contratti)
 );
 
-create table prootti (
+create table prodotti (
 key_prodotti number(10) not null,
 nome_prodotto varchar2(128) not null,
 F0 NUMBER(10,6) not null, 

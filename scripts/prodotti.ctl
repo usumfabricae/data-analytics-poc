@@ -7,7 +7,7 @@ OPTIONS (
 )
 LOAD DATA
 CHARACTERSET UTF8
-infile "prodotto\prodotti*.csv"
+infile "prodotti\prodotti*.csv"
 APPEND
 INTO TABLE PRODOTTI
 	FIELDS TERMINATED BY ","
@@ -21,6 +21,6 @@ F1,
 F2,
 F3,
 GAS,
-data_inizio_validita,
-data_fine_validita
+data_inizio_validita date "yyyy-mm-dd",
+data_fine_validita date "yyyy-mm-dd"
 )
