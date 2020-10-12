@@ -2,6 +2,11 @@
 
 ## Create a new VPC - use default one
 
+The VPC architecture will be:  
+![VPC](./pircures/VPC-Architecture.PNG)  
+Create VPC Endpoints
+- Create VPC Endpoint for S3
+
 Create a Security Groups:
 - RDS and Workspace comunication
 - RDS and DMS data transfer
@@ -46,23 +51,30 @@ sqlldr user/pwd@orcl control=credito.ctl log=credito.log bad=credito_bad.csv
 sqlldr user/pwd@orcl control=prodotti.ctl log=prodotti.log bad=prodotti_bad.csv
 sqlldr user/pwd@orcl control=punti_di_fornitura.ctl log=punti_di_fornitura.log bad=punti_di_fornitura.csv
 
-```
+```  
+- Connect to the database using SQL Developer and rebuild UNUSABLE indexes  
+```bash
+select 'alter index '||index_name||' rebuild' from user_indexes where status='UNUSABLE'
+```  
 
-Crea un DMS Server sul VPC: (10 min)
+### Crea un DMS Server sul VPC: (10 min)
 	- Creazione del source Endpoint per RDS:  
 	    - Endpoint specific settings:   
 ```bash
 useLogminerReader=N;useBfile=Y;accessAlternateDirectly=false;useAlternateFolderForOnline=true;oraclePathPrefix=/rdsdbdata/db/ORCL_A/;usePathPrefix=/rdsdbdata/log/;replacePathPrefix=true  
 ```  
-	- Creazione del Service Access Role per scrivere nel bucket S3  
-	- Creazione del target endpoint su S3:  
-	    - Enspoint specific settings:   
+
+Creazione del Service Access Role per scrivere nel bucket S3  
+Creazione del target endpoint su S3:  
+	    - Endpoint specific settings:   
+	
 ```bash
-compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\n;datePartitionEnabled=false;  
+addColumnName=true;compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\n;includeOpForFullLoad=true; 
 ```
 
 ```bash
-compressionType=NONE;csvDelimiter=,;csvRowDelimiter=\n;datePartitionEnabled=false;  
+compressionType=NONE;datePartitionEnabled=false;timestampColumnName=DMS_TIMESTAMP;dataFormat=parquet;
 ```
+
 
 

@@ -38,7 +38,7 @@ F3 NUMBER(10,6) not null,
 GAS NUMBER(10,6) not null, 
 data_inizio_validita date not null,
 data_fine_validita date not null,
-primary key (nome_prodotto)
+primary key (key_prodotti)
 );
 
 create table credito (
