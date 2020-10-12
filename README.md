@@ -4,25 +4,38 @@
 
 The VPC architecture will be:  
 ![VPC](./pictures/VPC-Architecture.PNG)  
-Create VPC Endpoints
-- Create VPC Endpoint for S3
 
-Create a Security Groups:
-- RDS and Workspace comunication
-- RDS and DMS data transfer
+### Create VPC Endpoints  
+Create VPC Endpoint for S3: https://eu-west-1.console.aws.amazon.com/vpc/home?region=eu-west-1#Endpoints:sort=vpcEndpointId  
 
 ## Creazione di un Bucket S3
-- https://s3.console.aws.amazon.com/s3/home?region=eu-west-1#
+https://s3.console.aws.amazon.com/s3/home?region=eu-west-1#
+
+
 ## Create an Oracle RDS Instance on VPC
-- https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1
-- Crea un RDS Oracle Standard on selected VPC Standard Edition 2- 
+
+### Create a Security Group for Rds  
+https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#SecurityGroups:  
+
+### Create RDS Instance  
+Create instance: https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1  
+with following configuration:  
+- Create an Oracle RDS Standard Edition 2 
     - Instance name: orcl
     - instance type: db.m5.large
     - 50 GB
+    - on selected VPC 
+    - Assigning previously created Security Group
 
 ## Create Workspece environment
-- Crea un SimpleAD on selected VPC (about 10 min)
-- Create a new Workspace Environment (Power to speed-up SW set-up phase)
+
+### Crea un SimpleAD on selected VPC (about 10 min).  
+https://eu-west-1.console.aws.amazon.com/directoryservicev2/home?region=eu-west-1#!/directories  
+
+### Create a Workspace environment
+Create a new Workspace Environment (Power to speed-up SW set-up phase): https://eu-west-1.console.aws.amazon.com/workspaces/home?region=eu-west-1#listworkspaces:  
+
+Once workspace environment is ready:
 - Enable access via WEB
 - download and install:
     - https://eng-import-oracle.s3.amazonaws.com/OracleSW/winx64_12102_SE2_database_1of2.zip
@@ -37,12 +50,33 @@ Create a Security Groups:
     - https://fede-hpc-workshop-wrf.s3.us-east-2.amazonaws.com/archive/prodotti.tar.gz
     - https://fede-hpc-workshop-wrf.s3.us-east-2.amazonaws.com/archive/punti_di_fornitura.tar.gz  
     and uncompress 
-- Connect SQL Developer and 
-- Connect SQL and create tables:
+
+### Configure workspace security group in order to access RDS:
+Identify workspace ENI and its securty group: https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#NIC:sort=networkInterfaceId
+Configure RDS Security Group in order to accept connections from workspaces: https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#SecurityGroups:  
+
+### Log into Workspace, create oracle database schema and import data  
+Configure tnsnames.ora
+```bash
+ORCL=
+	 (DESCRIPTION=
+		(ADDRESS_LIST=
+		      (ADDRESS=
+			(PROTOCOL=tcp)
+			(HOST=<RDS.ENDPOINT>)
+			(PORT=1521)
+	      		)
+                )
+	        (CONNECT_DATA=
+			(SID=orcl)
+		)
+	)
+```
+Create tables:
 ```bash
 sqlplus user/pwd@orcl create_tables.sql
 ```
-- Load Tables data via sqlldr
+Load Tables data via sqlldr
 
 ```bash
 sqlldr user/pwd@orcl control=clienti.ctl log=clienti.log bad=clienti_bad.csv
