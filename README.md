@@ -51,12 +51,12 @@ Once workspace environment is ready:
     - https://fede-hpc-workshop-wrf.s3.us-east-2.amazonaws.com/archive/punti_di_fornitura.tar.gz  
     and uncompress 
 
-### Configure workspace security group in order to access RDS:
-Identify workspace ENI and its securty group: https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#NIC:sort=networkInterfaceId
+### Configure workspace security group in order to access RDS.  
+Identify workspace ENI and its securty group: https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#NIC:sort=networkInterfaceId  
 Configure RDS Security Group in order to accept connections from workspaces: https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#SecurityGroups:  
 
 ### Log into Workspace, create oracle database schema and import data  
-Configure tnsnames.ora
+#### Configure tnsnames.ora
 ```bash
 ORCL=
 	 (DESCRIPTION=
@@ -72,11 +72,11 @@ ORCL=
 		)
 	)
 ```
-Create tables:
+#### Create tables:
 ```bash
 sqlplus user/pwd@orcl create_tables.sql
 ```
-Load Tables data via sqlldr
+#### Load Tables data via sqlldr
 
 ```bash
 sqlldr user/pwd@orcl control=clienti.ctl log=clienti.log bad=clienti_bad.csv
@@ -86,14 +86,26 @@ sqlldr user/pwd@orcl control=prodotti.ctl log=prodotti.log bad=prodotti_bad.csv
 sqlldr user/pwd@orcl control=punti_di_fornitura.ctl log=punti_di_fornitura.log bad=punti_di_fornitura.csv
 
 ```  
-- Connect to the database using SQL Developer and rebuild UNUSABLE indexes  
+
+#### Rebuild unusable indexes  
+Set up SQL Developer connection string to RDS:
+```bash
+Hostname: <RDS.ENDPOINT>  
+Port: 1521  
+SID: orcl  
+```  
+
+Connect to the database and get the list of UNUSABLE indexes using
 ```bash
 select 'alter index '||index_name||' rebuild' from user_indexes where status='UNUSABLE'
 ```  
+execute query generated statements to rebuild indexes
+
 
 ### Crea un DMS Server sul VPC: (10 min)
-	- Creazione del source Endpoint per RDS:  
-	    - Endpoint specific settings:   
+
+#### Creazione del source Endpoint per RDS:  
+Endpoint specific settings:   
 ```bash
 useLogminerReader=N;useBfile=Y;accessAlternateDirectly=false;useAlternateFolderForOnline=true;oraclePathPrefix=/rdsdbdata/db/ORCL_A/;usePathPrefix=/rdsdbdata/log/;replacePathPrefix=true  
 ```  
