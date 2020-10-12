@@ -159,10 +159,20 @@ Create a policy to grant access to s3 bucket: https://console.aws.amazon.com/iam
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor1",
             "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": "arn:aws:s3:::<bucket_name>"
+            "Action": [
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:PutObjectTagging"
+            ],
+            "Resource": "arn:aws:s3:::fede-analytics-694275606777/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": "arn:aws:s3:::fede-analytics-694275606777"
         }
     ]
 }
