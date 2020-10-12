@@ -3,7 +3,7 @@
 ## Create a new VPC - use default one
 
 The VPC architecture will be:  
-![VPC](./pircures/VPC-Architecture.PNG)  
+![VPC](./pictures/VPC-Architecture.PNG)  
 Create VPC Endpoints
 - Create VPC Endpoint for S3
 
