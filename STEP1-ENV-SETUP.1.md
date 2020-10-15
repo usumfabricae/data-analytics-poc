@@ -8,11 +8,11 @@ The VPC architecture will be:
 ### Create VPC Endpoints  
 Create VPC Endpoint for S3: https://eu-west-1.console.aws.amazon.com/vpc/home?region=eu-west-1#Endpoints:sort=vpcEndpointId  
 
-## Creazione di un Bucket S3
+## Create an S3 Bucket
 https://s3.console.aws.amazon.com/s3/home?region=eu-west-1#
 
 
-## Create an Oracle RDS Instance on VPC
+## Create an Oracle RDS Instance on VPC (13 USD/day)
 
 ### Create a Security Group for Rds  
 https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#SecurityGroups:  
@@ -32,7 +32,7 @@ with following configuration:
 ### Crea un SimpleAD on selected VPC (about 10 min).  
 https://eu-west-1.console.aws.amazon.com/directoryservicev2/home?region=eu-west-1#!/directories  
 
-### Create a Workspace environment
+### Create a Workspace environment (11,00 USD/month + 0,74 USD/hour)
 Create a new Workspace Environment (Power to speed-up SW set-up phase): https://eu-west-1.console.aws.amazon.com/workspaces/home?region=eu-west-1#listworkspaces:  
 
 Once workspace environment is ready:
@@ -130,7 +130,7 @@ SELECT directory_name, directory_path FROM all_directories;
 
 
 
-### Create a DMS instance on VPC: (10 min)
+### Create a DMS instance on VPC: (10 min) (4.39 USD/day)
 ![DMS](./pictures/HighLevelDMS.PNG)  
 
 #### Create Replication Instance  
