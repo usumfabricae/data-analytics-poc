@@ -38,10 +38,10 @@ Create a new Workspace Environment (Power to speed-up SW set-up phase): https://
 Once workspace environment is ready:
 - Enable access via WEB
 - download and install:
-    - https://eng-import-oracle.s3.amazonaws.com/OracleSW/winx64_12102_SE2_database_1of2.zip
-    - https://eng-import-oracle.s3.amazonaws.com/OracleSW/winx64_12102_SE2_database_2of2.zip
-    - https://eng-import-oracle.s3.amazonaws.com/OracleSW/sqldeveloper-18.4.0-376.1900-x64.zip
-    - Install winRar
+    - Oracle tools including SQLPLUS and SQLLDR
+    - Oracle SQL Developer
+    - WinRar
+    - AWS Cli: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html
 - download data locally:
     - https://fede-hpc-workshop-wrf.s3.us-east-2.amazonaws.com/archive/clienti.tar.gz
     - https://fede-hpc-workshop-wrf.s3.us-east-2.amazonaws.com/archive/consensi.tar.gz
