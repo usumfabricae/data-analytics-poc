@@ -130,7 +130,7 @@ Create another Database to store oracle tables references:
 https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#create-database  
 
 ```bash
-Name: oracle
+Name: oracle_source
 Description: database containing oracle source tables
 ```
 
@@ -157,7 +157,7 @@ Connection: orcl
 Inlcude Path: ORCL/%
 Role: LakeFormationWorkflowRole
 Frequency: Run on Demand
-Database: oracle
+Database: oracle_source
 
 ```
 
@@ -175,7 +175,7 @@ SSH Key: Skip
 
 ```
 
-And a Notebook linked to the endpoint ($0.0638 USD/hour)
+And a Notebook linked to the endpoint ($0.0638 USD/hour) (circa 6 minuti)
 partito a 59
 
 ```bash
@@ -187,4 +187,50 @@ Security Group: select glue security group
 ```
 
 Once the notebook is available you can open it git clone the repo within the notabook.
+
+
+## Use Lakeformatio Blueprint to load oracle data into the datalake
+
+Create another Database to store oracle tables references:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#create-database  
+
+```bash
+Name: datalake
+Description: database containing datalake objects
+```
+
+Create a Blueprint:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#create-workflow
+
+```bash
+Blueprint Type: database snapshot
+Database connection: orcl
+Source data path: ORCL/%
+
+Import Target: datalake
+
+Data Format: Parquet
+
+Workflow name: upload-oracle-database
+IAM Role: LakeformationWorkflowRole
+TablePrefix: l
+```
+
+Execute the workflow and monitor the status.
+
+
+### Build the transform job and use AWS Glue to run the transformation
+Continue with Jupyther Notebook to build and test the transform module.  
+
+Deploy the transform module in AWS Glue and run the transform Job.  
+
+Execute the transformation Job.
+
+Add a new crawler to automatically upload the catalog with the new transform output
+
+
+
+## Accessing and transforming data using EMR
+
+
 
