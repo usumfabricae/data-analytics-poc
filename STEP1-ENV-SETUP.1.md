@@ -29,7 +29,7 @@ with following configuration:
 
 ## Create Workspece environment
 
-### Crea un SimpleAD on selected VPC (about 10 min).  
+### Create a SimpleAD on selected VPC (about 10 min).  
 https://eu-west-1.console.aws.amazon.com/directoryservicev2/home?region=eu-west-1#!/directories  
 
 ### Create a Workspace environment (11,00 USD/month + 0,74 USD/hour)

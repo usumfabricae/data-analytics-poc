@@ -79,15 +79,14 @@ Inline Policy:
 ```
 
 
-### Create a Glue Crawler to analyze CDC content and generate datamodel
+### Create a Glue Crawler to analyze Oracle database content and generate datamodel
 
 Add a new crawler: https://eu-west-1.console.aws.amazon.com/glue/home?region=eu-west-1#addCrawler:  
 ```bash
-Name: crawl-cdc
+Name: grtCDCFormat
 Description: database containing cdc output
-Datastore: JDBC
-Connection: orcl
-Inlcude Path: ORCL/%
+Datastore: S3
+Include Path: s3://<backet>/dms_target/ADMIN/
 Role: LakeFormationWorkflowRole
 Frequency: Run on Demand
 Database: cdc
@@ -95,7 +94,97 @@ Database: cdc
 ```
 Now we can execute the crawler and once it is finished we can log onto Athena to have a look at the content of those tables.
 
+Here after some query examples:
+```bash
+WITH deduplica_soggetti as (
+select * from (
+SELECT 
+rank() OVER (partition by nome,cognome order by key_soggetti desc) as rnk,
+a.* 
+FROM "cdc"."soggetti" a) deduplica_soggetti 
+where deduplica_soggetti.rnk=1)
+select * from deduplica_soggetti limit 10;
+```  
+Ma anche query più complesse con le join:
+```bash
+with deduplica_soggetti as (
+select * from (
+SELECT 
+rank() OVER (partition by nome,cognome order by key_soggetti desc) as rnk,
+a.* 
+FROM "cdc"."soggetti" a) deduplica_soggetti 
+where deduplica_soggetti.rnk=1),
+contratti_attivi as (
+select * from "cdc"."contratti" where
+  data_attivazione_fornitura <=date_format(current_timestamp,'%Y-%m-%d %k:%i:%s') and
+  data_cessazione_fornitura >=date_format(current_timestamp,'%Y-%m-%d %k:%i:%s')
+  )
+select * from deduplica_soggetti a, contratti_attivi b
+where 
+a.key_soggetti=b.key_soggetti limit 10;    
+
+```
+
+### Include external database tables into the catalog
+Create another Database to store oracle tables references:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#create-database  
+
+```bash
+Name: oracle
+Description: database containing oracle source tables
+```
+
+Create a Glue Connection to allow Glue to access Oracle Database:  
+https://eu-west-1.console.aws.amazon.com/glue/home?region=eu-west-1#addEditConnection:
+```bash
+Connection Name: orcl
+Connection Type: 
+Jdbc URL: jdbc:oracle:thin://@<RDS ENDPOINT>:1521/ORCL
+Username: admin
+Pwd: XXX
+VPC: Select the vpc that includes RDS
+Security Group: Select security group that shall be used by glue
+
+```
 
 
+Add a new crawler: https://eu-west-1.console.aws.amazon.com/glue/home?region=eu-west-1#addCrawler:  
+```bash
+Name: getOracleTables
+Description: database containing cdc output
+Datastore: JDBC
+Connection: orcl
+Inlcude Path: ORCL/%
+Role: LakeFormationWorkflowRole
+Frequency: Run on Demand
+Database: oracle
 
+```
+
+### Create a Glue Developer Endpoint (0.44 USD/hour per DPU about 31 USD/day) (circa 10 min)
+
+```bash
+Name: analytics-developer-endpoint
+Role: LakeFormationWorkflowRole
+DPU: 3
+Choose a VPC, subnet, and security groups:
+    Select VPC:
+    Subnet: Chose a subnet
+    Select Security group : the same used for Oracle connection
+SSH Key: Skip
+
+```
+
+And a Notebook linked to the endpoint ($0.0638 USD/hour)
+partito a 59
+
+```bash
+Notebook Name: analytics-poc
+Create a IAM Role: LakeFormationWorkflowRole
+VPC: select VPC
+Subnet: pick one
+Security Group: select glue security group
+```
+
+Once the notebook is available you can open it git clone the repo within the notabook.
 
