@@ -105,7 +105,7 @@ FROM "cdc"."soggetti" a) deduplica_soggetti
 where deduplica_soggetti.rnk=1)
 select * from deduplica_soggetti limit 10;
 ```  
-Ma anche query più complesse con le join:
+And also more complex queries:
 ```bash
 with deduplica_soggetti as (
 select * from (
@@ -176,7 +176,7 @@ SSH Key: Skip
 ```
 
 And a Notebook linked to the endpoint ($0.0638 USD/hour) (circa 6 minuti)
-partito a 59
+
 
 ```bash
 Notebook Name: analytics-poc
@@ -186,7 +186,8 @@ Subnet: pick one
 Security Group: select glue security group
 ```
 
-Once the notebook is available you can open it git clone the repo within the notabook.
+Once the notebook is available you can open it git clone the repo within the notebook.
+https://eu-west-1.console.aws.amazon.com/sagemaker/home?region=eu-west-1#/notebook-instances
 
 
 ## Use Lakeformation Blueprint to load oracle data into the datalake
@@ -219,10 +220,28 @@ TablePrefix: l
 Execute the workflow and monitor the status.
 
 
+Check performance difference with Athena leveraging Parquet files instead of csv.
+
+
 ### Build the transform job and use AWS Glue to run the transformation
 Continue with Jupyther Notebook to build and test the transform module.  
 
-Deploy the transform module in AWS Glue and run the transform Job.  
+Deploy the transform module in AWS Glue and run the transform Job.
+https://eu-west-1.console.aws.amazon.com/glue/home?region=eu-west-1#addJob:
+```bash
+Name: transformationJob
+Role: LakeformationWorkflowRole
+This job runs: A new Script to be authored by you
+Script file name: transformationJob
+
+Open Security Configuration:
+    Worker Type: G.1X
+    Number of Workers: 4
+    Catalog Options
+    
+```
+Next and Save job and edit script.
+Copy Paste the script content by using Trasformation.ipynb as guideline
 
 Execute the transformation Job.
 
