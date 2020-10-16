@@ -189,7 +189,7 @@ Security Group: select glue security group
 Once the notebook is available you can open it git clone the repo within the notabook.
 
 
-## Use Lakeformatio Blueprint to load oracle data into the datalake
+## Use Lakeformation Blueprint to load oracle data into the datalake
 
 Create another Database to store oracle tables references:  
 https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#create-database  
