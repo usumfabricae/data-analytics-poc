@@ -227,10 +227,29 @@ Deploy the transform module in AWS Glue and run the transform Job.
 Execute the transformation Job.
 
 Add a new crawler to automatically upload the catalog with the new transform output
+```bash
+Name: grtTransformedFormat
+Description: load formats related to transformed tables
+Datastore: S3
+Include Path: s3://<bucket_name>/transformed
+Role: LakeFormationWorkflowRole
+Frequency: Run on Demand
+Database: datalake
+
+```
+
+
+## Accessing data using Quicksight leveraging Athena
+Enable Quicksight Enterprise (so we can also access Oracle database directly)
+
+Enable Athena in security panel
+Enable access to S3 buckets (data and where athena saves the queries)
+Grant access to database and tables to IAMAllowedPrincipals role.
 
 
 
-## Accessing and transforming data using EMR
+
+
 
 
 
