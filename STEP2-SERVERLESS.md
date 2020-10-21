@@ -267,8 +267,32 @@ Grant access to database and tables to IAMAllowedPrincipals role.
 
 
 
+## Using EMR to access catalog tables
+Set-up an EMR cluster:  
+https://eu-west-1.console.aws.amazon.com/elasticmapreduce/home?region=eu-west-1#quick-create:  
 
+Change the following options and leave the other as they are:  
+```bash
+Go to advanced options
+Select at least: Spark, Livy
+AWS Datacatalog settings: Enable all
+Cluster Name: My Cluster
 
+```  
+Allow EMR to access Datalake resources:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#catalog-settings  
+Allow full access to datalake inserting EMR_EC2_DefaultRole among datalake administrators  
 
+Start-up a EMR Notebook:  
+https://eu-west-1.console.aws.amazon.com/elasticmapreduce/home?region=eu-west-1#create-notebook:  
+
+```bash
+Notebook Name: MyNotebook
+Chose the EMR cluster we would like to associate to the notebook
+
+```  
+Leave other options as they are.  
+
+Once the notebook is ready we can use EMR_Example.ipynb as guideline.  
 
 
