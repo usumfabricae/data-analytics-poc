@@ -1,5 +1,10 @@
 # Step 2 - 
 
+
+## Overview  
+The VPC architecture will be:  
+![SERVERLESS](./pictures/ServerlessApproach.PNG)  
+
 ## Generate datamodel for data loaded via DMS (CdC)
 
 ### Check the output of CDC process
