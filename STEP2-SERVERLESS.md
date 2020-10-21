@@ -2,7 +2,7 @@
 
 
 ## Overview  
-The VPC architecture will be:  
+The components we are goint to explore in this session are:  
 ![SERVERLESS](./pictures/ServerlessApproach.PNG)  
 
 ## Generate datamodel for data loaded via DMS (CdC)
@@ -180,7 +180,7 @@ SSH Key: Skip
 
 ```
 
-And a Notebook linked to the endpoint ($0.0638 USD/hour) (circa 6 minuti)
+And a Notebook linked to the endpoint ($0.0638 USD/hour) (set-up in circa 6 minuti)
 
 
 ```bash
@@ -272,7 +272,7 @@ Grant access to database and tables to IAMAllowedPrincipals role.
 
 
 
-## Using EMR to access catalog tables
+## Using EMR to access catalog tables (0.576 USD/ora circa 13.8 USD/giorno)
 Set-up an EMR cluster:  
 https://eu-west-1.console.aws.amazon.com/elasticmapreduce/home?region=eu-west-1#quick-create:  
 
