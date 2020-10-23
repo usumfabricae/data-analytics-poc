@@ -263,15 +263,6 @@ Database: datalake
 ```
 
 
-## Accessing data using Quicksight leveraging Athena
-Enable Quicksight Enterprise (so we can also access Oracle database directly)
-
-Enable Athena in security panel
-Enable access to S3 buckets (data and where athena saves the queries)
-Grant access to database and tables to IAMAllowedPrincipals role.
-
-
-
 ## Using EMR to access catalog tables (0.576 USD/ora circa 13.8 USD/giorno)
 Set-up an EMR cluster:  
 https://eu-west-1.console.aws.amazon.com/elasticmapreduce/home?region=eu-west-1#quick-create:  
