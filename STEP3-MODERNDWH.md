@@ -1,4 +1,4 @@
-# Step 3 - 
+# Step 3 - Modern DWH.  
 
 
 ## Overview  
@@ -79,8 +79,8 @@ TablePrefix:j
 
 ## Configure redshift
 
-Crate a custom role for redshift with following inline policy to allow access to datalake
-RoleName: 
+### Crate a custom role for redshift with following inline policy to allow access to datalake
+RoleName: poc-a2a-redshift-role
 
 {
     "Version": "2012-10-17",
@@ -97,17 +97,57 @@ RoleName:
                 "glue:GetPartitions"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:PutObjectTagging"
+            ],
+            "Resource": "arn:aws:s3:::<bucket-name>/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": "arn:aws:s3:::<bucket-name>"
         }
     ]
 }
 
-Crate a redshift cluster:
-
+### Crate a redshift cluster:  
+https://eu-west-1.console.aws.amazon.com/redshiftv2/home?region=eu-west-1#create-cluster  
 ```bash
-create external schema if not exists datalake from DATA CATALOG database 'datalake' iam_role 'arn:aws:iam::<account-id>:role/<role-name>' region '<region>';
+Cluster-identifier: redshift-cluster-1  
+Panning: Free trial  
+Database name: dev  
+Master user name: awsuser  
+Additional Configuration: use default
+
 ```  
 
-Test some queries
+Once the redshift database is running attach previously created IAM Role to grant access to datalake resources.  
+https://eu-west-1.console.aws.amazon.com/redshiftv2/home?region=eu-west-1#clusters  
+Select the cluster, Actions, Manage Iam Roles.  
+Select the role and Add IAM Role  
+Done.  
+
+
+### Connect to  Query Editor  
+https://eu-west-1.console.aws.amazon.com/redshiftv2/home?region=eu-west-1#query-editor:  
+
+provide databasename (dev) username (awsuser) and password used during Redshift set-up.  
+
+In the Editor window condigure Redshift Spectrum to access data includend in the Datalake's catalog.  
+
+```bash
+create external schema if not exists datalake from DATA CATALOG database 'datalake' iam_role 'arn:aws:iam::<account-id>:role/poc-a2a-redshift-role' region 'eu-west-1';
+```  
+
+Test some queries:  
 ```bash
 select count(*) from datalake.customer_view_churn_analisys;
 
@@ -117,10 +157,34 @@ select count(*) from local_customer_view_churn_analisys a , datalake.customer_vi
 where
 a.key_soggetti=b.key_soggetti;
 
-## Accessing data using Quicksight leveraging Athena
-Enable Quicksight Enterprise (so we can also access Oracle database directly)
 
-Enable Athena in security panel
-Enable access to S3 buckets (data and where athena saves the queries)
-Grant access to database and tables to IAMAllowedPrincipals role.
+select nome,regione,eta_cliente,avg(eta_cliente) over (partition by regione) as eta_media_regionale 
+from local_customer_view_churn_analisys a , redshift_jdbc.jconsensi_json b 
+where
+a.key_soggetti=b.index and
+b.consenso='Y' and nome like 'Nicol%'
+order by regione;
 
+```  
+
+## Accessing data using Quicksight leveraging Athena, Redshift 
+
+Enable Quicksight Enterprise (so we can also access Redshift via private connection)
+
+Go to the Magage Quicksight:
+In Security & permissions Panel:  
+* Enable Athena in security panel  
+* Enable access to S3 buckets (data and where athena saves the queries)  
+
+In Manage VPC connections:
+* Add VPC 
+* Select VPC
+* Type the name of the default security group (the same used in redshift set-up)
+ 
+In Lakeformation:
+
+Grant access to database and tables to IAMAllowedPrincipals and  poc-a2a-redshift-role roles:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#tables  
+
+In quicksight create datasource for both Athena and Redshift, using PSPICE for Athena and Directquery for Redshift.  
+Build reports
