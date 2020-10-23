@@ -8,13 +8,44 @@ The components we are goint to explore in this session are:
 
 ## Load Json Files
 ### Convert json file from index to record formats
-Create a glue job of python type 
+Create a glue job:
+```bash
+Name: json-dict-to-json-records
+Role: LakeformationWorkflowRole
+This job runs: A new Script to be authored by you
+Script file name: jsonDict-to-jsonRecords
+
+Open Security Configuration:
+    Worker Type: G.1X
+    Number of Workers: 2
+    Catalog Options
+    
+```
+
+With the current script:  
 ```bash
 import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+from awsglue.dynamicframe import DynamicFrameCollection
+from awsglue.dynamicframe import DynamicFrame
 
 import boto3
 import pandas as pd
 
+## @params: [JOB_NAME]
+#RIMUOVERE COMMENTO PER USARE IN GLUE
+args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+#FINE RIMUOVERE COMMENTO PER USARE IN GLUE
 
 bucketname = "fede-analytics-694275606777"
 s3 = boto3.resource('s3')
@@ -26,14 +57,24 @@ for obj in my_bucket.objects.filter(Prefix=source):
     source_filename = (obj.key).split('/')[-1]
     body = obj.get()['Body'].read()
     dataframe=pd.read_json(body,orient='index').reset_index()
-    result=dataframe.to_json(orient="records")
+    result=dataframe.to_json(orient="records",lines=True)
     output=s3.Object(bucketname, '{}/{}'.format(target,source_filename))
     output.put(Body=result)
     
+job.commit()    
 ```      
 
-### Configure Glue Crawler to parse Json Files
-
+### Configure Glue Crawler to parse Json files and update catalog  
+```bash
+Name: grtTransformedFormat
+Description: load formats related to transformed tables
+Datastore: S3
+Include Path: s3://<bucket_name>/datalake/consensi_json
+Role: LakeFormationWorkflowRole
+Frequency: Run on Demand
+Database: datalake
+TablePrefix:j
+```    
 
 
 ## Configure redshift
