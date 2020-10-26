@@ -81,7 +81,7 @@ TablePrefix:j
 
 ### Crate a custom role for redshift with following inline policy to allow access to datalake
 RoleName: poc-a2a-redshift-role
-
+```bash
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -117,6 +117,8 @@ RoleName: poc-a2a-redshift-role
         }
     ]
 }
+```  
+
 
 ### Crate a redshift cluster:  
 https://eu-west-1.console.aws.amazon.com/redshiftv2/home?region=eu-west-1#create-cluster  
