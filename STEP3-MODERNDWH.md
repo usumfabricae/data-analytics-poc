@@ -47,7 +47,7 @@ job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 #FINE RIMUOVERE COMMENTO PER USARE IN GLUE
 
-bucketname = "fede-analytics-694275606777"
+bucketname = "<bucket-name>"
 s3 = boto3.resource('s3')
 my_bucket = s3.Bucket(bucketname)
 source = "datalake/consensi"
