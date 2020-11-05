@@ -88,6 +88,76 @@ Resources:
                CatalogId: !Ref AWS::AccountId
                Name: !Ref dbdatalake
  
+   tableProdottiGlueAccess:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - SELECT
+         - DESCRIBE
+        Resource:
+            TableResource: 
+               CatalogId: !Ref AWS::AccountId
+               DatabaseName: datalake
+               Name: l_orcl_admin_prodotti
+               
+   tableCreditoGlueAccess:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - SELECT
+         - DESCRIBE
+        Resource:
+            TableResource: 
+               CatalogId: !Ref AWS::AccountId
+               DatabaseName: datalake
+               Name: l_orcl_admin_credito
+               
+   tableSoggettiGlueAccess:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - SELECT
+         - DESCRIBE
+        Resource:
+            TableResource: 
+               CatalogId: !Ref AWS::AccountId
+               DatabaseName: datalake
+               Name: l_orcl_admin_soggetti
+               
+   tablePuntiFornituraGlueAccess:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - SELECT
+         - DESCRIBE
+        Resource:
+            TableResource: 
+               CatalogId: !Ref AWS::AccountId
+               DatabaseName: datalake
+               Name: l_orcl_admin_punti_di_fornitura
+               
+   tableContrattiGlueAccess:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - SELECT
+         - DESCRIBE
+        Resource:
+            TableResource: 
+               CatalogId: !Ref AWS::AccountId
+               DatabaseName: datalake
+               Name: l_orcl_admin_contratti
+               
   consensijson:
     Type: "AWS::Glue::Crawler"
     Properties:

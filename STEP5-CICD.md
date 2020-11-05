@@ -14,7 +14,7 @@ Upload cloud formation template to an s3 bucket:
 cd $HOME/Sagemaker
 git clone https://github.com/usumfabricae/data-analytics-poc.git
 cd data-analytics-poc/
-aws s3 cp ./ci-cd/fluePipeline.yaml s3://<target-bucket>/cloudformation/
+aws s3 cp ./ci-cd/gluePipeline.yaml s3://<target-bucket>/cloudformation/
 ```  
 
 Open Cloudformation console:  
@@ -31,6 +31,12 @@ This template will create:
 - A manual approval for testing results  
 - Automated transition into production  
 
+
+## Adjust Lakeformation permission to allow deployment of new items using CodePipeline  
+Go to: https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#catalog-settings  
+Add among datalake administrators cicd role (the mame of the role is gluedemocicd-CloudFromationRole-XXXX)
+
+
 ## Using CodeCommit code repository from Sagemaker  
 
 ### Update sagemaker permission to access to AWS CodeCommit
@@ -43,8 +49,10 @@ add the following plicy: AWSCodeCommitPowerUser
 
 Set-up git credential helper
 
+```bash  
 git config --global credential.helper '!aws codecommit credential-helper $@'
 git config --global credential.UseHttpPath true
+```  
 
 ### Read repository URL from AWS CodeCommit page  
 Open: https://eu-west-1.console.aws.amazon.com/codesuite/codecommit/repositories?region=eu-west-1  
@@ -53,13 +61,24 @@ Click on HTTPS link related to your repository
 Go back to Sagemaker Notebook and
 
 ```bash  
-git clone <paste repository url>
+cd $HOME/Sagemaker
+git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/gluedemocicd
 cd gluedemocicd
 ```  
 
-## Adjust Lakeformation permission to allow deployment of new items using CodePipeline  
-Go to: https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#catalog-settings  
-Add among datalake administrators cicd role (the mame of the role is gluedemocicd-CloudFromationRole-XXXX)
+Now we can copy scripts add demo scripts into this repository:
+```bash  
+cp ../data-analytics-poc/ci-cd/codecommit/* .
+git add gluedatalake.yaml
+git add datalakejob.py
+git add datalakelive_tst.py
+git add commitSample.py
+git commit
+```  
+
+
+
+
 
 Modify ETL Job Query
 Issue a git commit and push changes to code commit
