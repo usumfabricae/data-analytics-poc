@@ -11,7 +11,10 @@ Download this repo to a Sagemaker notebook used to work with Glue Developer Endp
 ## Deploy cloudformation template to set-up CI/CD pipeline (10 - 15 minutes)
 Upload cloud formation template to an s3 bucket:  
 ```bash  
-aws s3 cp ./ci-cd/fluePipeline.yaml s3;//<target-bucket>/cloudformation/
+cd $HOME/Sagemaker
+git clone https://github.com/usumfabricae/data-analytics-poc.git
+cd data-analytics-poc/
+aws s3 cp ./ci-cd/fluePipeline.yaml s3://<target-bucket>/cloudformation/
 ```  
 
 Open Cloudformation console:  
@@ -20,10 +23,10 @@ Select Creat stack (with new resources), provide http path to previously saved t
 Leave all other options as they are, acknowledge that the template will create new IAM Roles.  
 
 This template will create:
-- a Code Commit Repository to store the source code  
-- a Code Pipeline to orchestrate build, test and deployment  
+- a CodeCommit Repository to store the source code  
+- a CodePipeline to orchestrate build, test and deployment  
 - an automated infrastructure component deployment for testing  
-- a Code Build step used to test the deployment  
+- a CodeBuild step used to test the deployment  
 - an automated testing infrastructure clean-up after deployment  
 - A manual approval for testing results  
 - Automated transition into production  
@@ -70,5 +73,14 @@ git push
 CI/CD process can be monitored accessing to AWS CodePipeline:  
 https://eu-west-1.console.aws.amazon.com/codesuite/codepipeline/pipelines?region=eu-west-1  
 
+### Allow new environments to access to datalake tables used in read for testing:
+```bash 
+aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_prodotti"}}'
+aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_credito"}}'
+aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_soggetti"}}'
+aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_punti_di_fornitura"}}'
+aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_contratti"}}'
+
+```  
 
 
