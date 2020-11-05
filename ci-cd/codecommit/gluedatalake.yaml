@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  BucketName:
+    Type: String
+    Default: fede-analytics-694275606777
+  ObjectKey:
+    Type: String
+    Default: analytics-demo-git-hub
+  EnvType:
+    Description: Environment type.
+    Default: test
+    Type: String
+    AllowedValues:
+    - prod
+    - test
+    ConstraintDescription: must specify prod or test.
+Resources:
+  binariesBucket:
+    Type: AWS::S3::Bucket
+    Properties: {}
+  unzipFiles:
+    Type: Custom::copyLambdaFiles
+    DependsOn:
+    - binariesBucket
+    Properties:
+      ServiceToken: !GetAtt [unzipFilesFunction, Arn]
+
+  unzipFilesFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Lambda function to prepare files
+      Environment:
+        Variables:
+          destinationbucket : !Ref 'binariesBucket'
+          sourcebucket: !Ref 'BucketName'
+          zipKey: !Ref 'ObjectKey'
+      Code:
+        ZipFile: |
+         import cfnresponse
+         import boto3
+         from botocore.client import Config
+         import zipfile
+         import os
+         def handler(event, context):
+            client = boto3.client('s3')
+            destinationbucket = os.environ['destinationbucket']
+            if event['RequestType'] != 'Delete':
+               print event
+               s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
+               sourcebucket = os.environ['sourcebucket']
+               zipKey = os.environ['zipKey']
+               s3.download_file(sourcebucket, zipKey, '/tmp/target.zip')
+               zfile = zipfile.ZipFile('/tmp/target.zip', 'r')
+               zfile.extractall('/tmp/')
+               zfile.close()
+               s3.upload_file('/tmp/datalakejob.py', destinationbucket, 'gluescripts/datalakejob.py')
+            else:
+               s3 = boto3.resource('s3')
+               bucket = s3.Bucket(destinationbucket)
+               for key in bucket.objects.all():
+                  client.delete_object(Bucket=destinationbucket,  Key=key.key)
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")
+      Handler: index.handler
+      Role: !GetAtt [LambdaExecutionRole, Arn]
+      Runtime: python2.7
+      Timeout: 300    
+
+  dbdatalake:
+    Type: "AWS::Glue::Database"
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput: 
+        Description: Database di test
+        Name: !Join [ "_", [ "datalake" , !Ref "AWS::StackName"  ] ]
+  
+  dbDatalakePermissionGlue:
+    Type: "AWS::LakeFormation::Permissions"
+    Properties:
+        DataLakePrincipal:
+             DataLakePrincipalIdentifier: !GetAtt gluerole.Arn
+        Permissions:
+         - ALTER
+         - CREATE_TABLE
+         - DESCRIBE
+         - DROP
+        Resource:
+            DatabaseResource: 
+               CatalogId: !Ref AWS::AccountId
+               Name: !Ref dbdatalake
+ 
+  consensijson:
+    Type: "AWS::Glue::Crawler"
+    Properties:
+      Role: !GetAtt gluerole.Arn
+      DatabaseName: !Ref dbdatalake
+      Targets: 
+        S3Targets:
+         - Path: !Join [ "/", [ "s3:/" , fede-analytics-694275606777 ,datalake/consensi_json ] ]
+
+  churnview:
+    Type: "AWS::Glue::Crawler"
+    Properties:
+      Role: !GetAtt gluerole.Arn
+      DatabaseName: !Ref dbdatalake
+      Targets: 
+        S3Targets:
+         - Path: !Join [ "/", [ "s3:/" , fede-analytics-694275606777  ,transformed/customer_view_churn_analisys ] ]
+         
+  etljob:
+    Type: "AWS::Glue::Job"
+    DependsOn: unzipFiles    
+    Properties:
+      Role: !GetAtt gluerole.Arn
+      AllocatedCapacity: 10
+      GlueVersion: 2.0
+      DefaultArguments:
+        "--TempDir": !Join [ "/", [ "s3:/",!Ref 'binariesBucket' , tmp/ ] ]      
+        "--sourcedatabase": "datalake"
+        "--job-language" : "python"
+        "--targetbucket": !Ref 'binariesBucket' 
+        "--job-bookmark-option": job-bookmark-enable
+      Command: 
+        Name: glueetl
+        ScriptLocation: !Join [ "/", [ "s3:/",!Ref 'binariesBucket' , gluescripts/datalakejob.py ] ]
+        
+  gluerole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - glue.amazonaws.com
+            - lambda.amazonaws.com            
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: s3allsinglebucket
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Action:
+              - s3:*
+              Resource: 
+              - !Join [ "", [ "arn:aws:s3:::", !Ref binariesBucket , "/*" ] ]
+              - !Join [ "", [ "arn:aws:s3:::",!Ref binariesBucket ] ]
+              - "arn:aws:s3:::fede-analytics-694275606777/*"
+              - "arn:aws:s3:::fede-analytics-694275606777"                            
+              Effect: Allow
+    
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: 's3:*'
+            Resource: 
+              - !Join [ "", [ "arn:aws:s3:::", !Ref BucketName, "/*" ] ]
+              - !Join [ "", [ "arn:aws:s3:::",!Ref BucketName ] ]
+              - !Join [ "", [ "arn:aws:s3:::", !Ref binariesBucket , "/*" ] ]
+              - !Join [ "", [ "arn:aws:s3:::",!Ref binariesBucket ] ]
