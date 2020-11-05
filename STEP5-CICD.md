@@ -76,30 +76,7 @@ git add commitSample.py
 git commit
 ```  
 
-
-
-
-
-Modify ETL Job Query
-Issue a git commit and push changes to code commit
-
-```bash  
-git add datalakejob.py
-git commit
-git push
-```  
-
-CI/CD process can be monitored accessing to AWS CodePipeline:  
+Now we can see that the pipeline strarts automatically by going on CodePipeline console:  
 https://eu-west-1.console.aws.amazon.com/codesuite/codepipeline/pipelines?region=eu-west-1  
-
-### Allow new environments to access to datalake tables used in read for testing:
-```bash 
-aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_prodotti"}}'
-aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_credito"}}'
-aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_soggetti"}}'
-aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_punti_di_fornitura"}}'
-aws lakeformation grant-permissions --principal DataLakePrincipalIdentifier=arn:aws:iam::694275606777:role/gluedemocicdtest-gluerole-S350UICTINT3 --permissions "SELECT" "INSERT" "DESCRIBE" --resource '{ "Table": {"DatabaseName":"datalake", "Name":"l_orcl_admin_contratti"}}'
-
-```  
 
 
