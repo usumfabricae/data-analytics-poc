@@ -81,7 +81,7 @@ class MyTestCase(unittest.TestCase):
     #evaluate athena query of results have expected value
     print ("Evaluate Query Results")
     response = athena.start_query_execution(
-        QueryString='select count(*) from '+destinationDatabase+'.customer_view_churn_analisys;', 
+        QueryString='select count(*) from datalake.customer_view_churn_analisys;', 
         ResultConfiguration={
         'OutputLocation': 's3://'+resourcesdict['binariesBucket']+'/livetestquery1/'
         })
