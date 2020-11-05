@@ -221,23 +221,6 @@ Resources:
                s3.copy({ 'Bucket': sourceBucket, 'Key': objectKey}, destinationbucket, objectKey)
             cfnresponse.send(event, context, cfnresponse.SUCCESS, {}, "CustomResourcePhysicalID")                        
 
-#  CopyDeployProductLambda:
-#    Type: Custom::CopyDeployProductLambda
-#    Properties:
-#      ServiceToken: !GetAtt CopyLambdasFunction.Arn
-#      destinationBucketName: !Ref 'CodePipelineBucket'
-#      sourceBucketName: 'lfcarocomdemo'
-#      objectKey: 'deployProductYaml.zip'
-
-#  CopyDemoAppLambda:
-#    Type: Custom::CopyDeployProductLambda
-#    Properties:
-#      ServiceToken: !GetAtt CopyLambdasFunction.Arn
-#      destinationBucketName: !Ref 'CodePipelineBucket'
-#      sourceBucketName: 'lfcarocomdemo'
-#      objectKey: 'gluedemoetl.zip'
-
-
   DeleteCFFunction:
     Type: AWS::Lambda::Function
     DependsOn: CloudFormationRole
