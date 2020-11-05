@@ -88,7 +88,7 @@ Resources:
                CatalogId: !Ref AWS::AccountId
                Name: !Ref dbdatalake
  
-   tableProdottiGlueAccess:
+  tableProdottiGlueAccess:
     Type: "AWS::LakeFormation::Permissions"
     Properties:
         DataLakePrincipal:
@@ -102,7 +102,7 @@ Resources:
                DatabaseName: datalake
                Name: l_orcl_admin_prodotti
                
-   tableCreditoGlueAccess:
+  tableCreditoGlueAccess:
     Type: "AWS::LakeFormation::Permissions"
     Properties:
         DataLakePrincipal:
@@ -116,7 +116,7 @@ Resources:
                DatabaseName: datalake
                Name: l_orcl_admin_credito
                
-   tableSoggettiGlueAccess:
+  tableSoggettiGlueAccess:
     Type: "AWS::LakeFormation::Permissions"
     Properties:
         DataLakePrincipal:
@@ -130,7 +130,7 @@ Resources:
                DatabaseName: datalake
                Name: l_orcl_admin_soggetti
                
-   tablePuntiFornituraGlueAccess:
+  tablePuntiFornituraGlueAccess:
     Type: "AWS::LakeFormation::Permissions"
     Properties:
         DataLakePrincipal:
@@ -144,7 +144,7 @@ Resources:
                DatabaseName: datalake
                Name: l_orcl_admin_punti_di_fornitura
                
-   tableContrattiGlueAccess:
+  tableContrattiGlueAccess:
     Type: "AWS::LakeFormation::Permissions"
     Properties:
         DataLakePrincipal:

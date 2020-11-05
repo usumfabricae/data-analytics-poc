@@ -36,6 +36,12 @@ This template will create:
 Go to: https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#catalog-settings  
 Add among datalake administrators cicd role (the mame of the role is gluedemocicd-CloudFromationRole-XXXX)
 
+Verify and check LakeFormation settings:  
+https://eu-west-1.console.aws.amazon.com/lakeformation/home?region=eu-west-1#default-permission-settings  
+and enable:  
+- Use only IAM access control for new databases  
+- Use only IAM access control for new tables in new databases  
+
 
 ## Using CodeCommit code repository from Sagemaker  
 
