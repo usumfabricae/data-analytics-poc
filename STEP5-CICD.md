@@ -6,13 +6,16 @@ The components we are goint to explore in this session are:
 ![SERVERLESS](./pictures/CICD.PNG)  
 
 
-Download this repo to a Sagemaker notebook used to work with Glue Developer Endpoint.  
+Download this repo to Sagemaker notebook used to work with Glue Developer Endpoint.  
+```bash  
+cd $HOME/Sagemaker
+git clone https://github.com/usumfabricae/data-analytics-poc.git
+```  
+
 
 ## Deploy cloudformation template to set-up CI/CD pipeline (10 - 15 minutes)
 Upload cloud formation template to an s3 bucket:  
 ```bash  
-cd $HOME/Sagemaker
-git clone https://github.com/usumfabricae/data-analytics-poc.git
 cd data-analytics-poc/
 aws s3 cp ./ci-cd/gluePipeline.yaml s3://<target-bucket>/cloudformation/
 ```  
@@ -72,7 +75,7 @@ git clone https://git-codecommit.eu-west-1.amazonaws.com/v1/repos/gluedemocicd
 cd gluedemocicd
 ```  
 
-Now we can copy scripts add demo scripts into this repository:
+Now we can copy demo scripts into this repository:
 ```bash  
 cp ../data-analytics-poc/ci-cd/codecommit/* .
 git add gluedatalake.yaml
